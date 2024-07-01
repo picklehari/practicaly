@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+langchain = "*"
+chroma = "*"
+mistralai = "*"
+openai = "*"
+tqdm = "*"
+chromadb = "*"
+pypdf = "*"
+pytube = "*"
+beautifulsoup4 = "*"
+ollama = "*"
+pillow = "*"
+scikit-learn = "*"
+markdown-pdf = "*"
+
+[dev-packages]
+ipykernel = "*"
+
+[requires]
+python_version = "3.11"
