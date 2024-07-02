@@ -4,3 +4,4 @@ Pipfile.lock
 */.DS_Store
 Temp/
 uploads/
+*/__pychache__
