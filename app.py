@@ -153,6 +153,11 @@ def write_chapters(content_dict:dict, out_path:str) -> str:
 
 @app.route('/generate_content', methods=['POST','GET'])
 def generate_all_content():
+    try:
+        os.remove(out_path)
+    except OSError:
+        pass
+
     content_type = request.form['content_type']
     input_images_pdf = request.form.get('input_images_pdf', False)
 
