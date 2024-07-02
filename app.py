@@ -164,7 +164,7 @@ def generate_all_content():
         file.save(content)
     else:
         content = request.form['content']
-
+    print("Content Recieved")
     content_text = fetch_data.fetch_input(content, content_type,input_images_pdf)
     content_text = [ct for ct in tqdm(content_text) if ct.replace("\n","").replace(" ","") != ""]
     content_embedding = [get_embedding(ct) for ct in tqdm(content_text)]

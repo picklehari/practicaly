@@ -306,9 +306,14 @@
             const formData = new FormData();
             formData.append('content_type', contentType);
             formData.append('input_images_pdf', inputImagesPdf);
-            formData.append('file', content);
 
-            fetch('/generate_content', {
+            if (contentType === 'pdf') {
+                formData.append('file', content);
+            } else {
+                formData.append('content', content);
+            }
+
+            fetch('http://localhost:5000/generate_content', {
                 method: 'POST',
                 body: formData
             })
