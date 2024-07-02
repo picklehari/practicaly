@@ -8,14 +8,15 @@ import uuid
 import os
 import openai
 import ollama
+from groq import Groq
 
 import warnings
 from dotenv import dotenv_values
 
 api_keys = dotenv_values(".env")
-openai.api_key = api_keys["OPENAI_API_KEY"]
+groq_api_key = api_keys["GROQ_API_KEY"]
 
-audio_client = openai.OpenAI(api_key=openai.api_key)
+audio_client = Groq(api_key=groq_api_key)
 _INPUTS = Literal["text","url","youtube","pdf"]
 
 import ollama
@@ -145,7 +146,7 @@ def youtube_to_transcript(url:str,del_audio:bool = True,base_path:str="Data/") -
   audio_path = download_audio(url,base_path)
   audio_file = open(audio_path,'rb')
   transcript = audio_client.audio.transcriptions.create(
-  model="whisper-1",
+  model="whisper-large-v3",
   file=audio_file
 )
   if del_audio:

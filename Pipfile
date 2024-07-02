@@ -17,6 +17,8 @@ ollama = "*"
 pillow = "*"
 scikit-learn = "*"
 markdown-pdf = "*"
+groq = "*"
+flask = "*"
 
 [dev-packages]
 ipykernel = "*"

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bights</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #6D28D9;
+            --primary-light: #8B5CF6;
+            --secondary-color: #1E40AF;
+            --background-start: #F3E8FF;
+            --background-end: #DBEAFE;
+            --text-color: #1F2937;
+            --text-light: #4B5563;
+            --white: #FFFFFF;
+            --success-color: #10B981;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        select, textarea, input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, textarea:focus, input[type="file"]:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper::after {
+            content: '\25BC';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-light);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        #pdfOptions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #result {
+            background-color: #ECFDF5;
+            border-left: 4px solid var(--success-color);
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+            margin-top: 1rem;
+        }
+
+        #result h3 {
+            color: var(--success-color);
+            margin-top: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .file-input-wrapper .btn {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            background-color: var(--primary-light);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-input-wrapper .btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        #fileNameDisplay {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bights</h1>
+            <p>Transform your content into structured notes and questions</p>
+        </header>
+
+        <div class="card">
+            <form id="analysisForm">
+                <div>
+                    <label for="inputType">Input Type</label>
+                    <div class="select-wrapper">
+                        <select id="inputType">
+                            <option value="text">Text</option>
+                            <option value="url">URL</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="contentInput">
+                    <label for="content">Content</label>
+                    <textarea id="content" rows="5" placeholder="Enter your content here..."></textarea>
+                </div>
+
+                <div id="fileInput" class="hidden">
+                    <label for="fileUpload">Upload File</label>
+                    <div class="file-input-wrapper">
+                        <button class="btn" type="button">Choose File</button>
+                        <input type="file" id="fileUpload" accept=".pdf,video/*">
+                    </div>
+                    <div id="fileNameDisplay"></div>
+                </div>
+
+                <div id="pdfOptions" class="hidden">
+                    <input type="checkbox" id="useImages">
+                    <label for="useImages">Use images in PDF (may increase processing time)</label>
+                </div>
+
+                <button type="submit">
+                    <i class="fas fa-magic"></i> Analyze and Generate
+                </button>
+            </form>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Processing your file...</p>
+        </div>
+
+        <div id="result" class="hidden">
+            <h3>Analysis Complete!</h3>
+            <p>Your content has been processed. Check your output directory for the generated PDF.</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('analysisForm');
+        const inputType = document.getElementById('inputType');
+        const contentInput = document.getElementById('contentInput');
+        const fileInput = document.getElementById('fileInput');
+        const pdfOptions = document.getElementById('pdfOptions');
+        const result = document.getElementById('result');
+        const fileUpload = document.getElementById('fileUpload');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const useImages = document.getElementById('useImages');
+        const loading = document.getElementById('loading');
+
+        inputType.addEventListener('change', function() {
+            const isFileUpload = this.value === 'pdf' || this.value === 'youtube';
+            contentInput.classList.toggle('hidden', isFileUpload);
+            fileInput.classList.toggle('hidden', !isFileUpload);
+            pdfOptions.classList.toggle('hidden', this.value !== 'pdf');
+        });
+
+        fileUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                fileNameDisplay.textContent = `Selected file: ${this.files[0].name}`;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            result.classList.add('hidden');
+            loading.classList.remove('hidden');
+            form.disabled = true;
+
+            const contentType = inputType.value;
+            const inputImagesPdf = useImages.checked;
+            let content;
+
+            if (contentType === 'pdf') {
+                content = fileUpload.files[0];
+            } else {
+                content = document.getElementById('content').value;
+            }
+
+            const formData = new FormData();
+            formData.append('content_type', contentType);
+            formData.append('input_images_pdf', inputImagesPdf);
+            formData.append('file', content);
+
+            fetch('/generate_content', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'output.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                result.classList.remove('hidden');
+                loading.classList.add('hidden');
+                form.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loading.classList.add('hidden');
+                form.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
