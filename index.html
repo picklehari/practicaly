@@ -317,7 +317,7 @@ const loading = document.getElementById('loading');
         formData.append('content', content);
     }
 
-            fetch('/generate_content', {
+            fetch('/api/generate_content', {
                 method: 'POST',
                 body: formData
             })
