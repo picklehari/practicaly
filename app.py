@@ -207,4 +207,4 @@ def generate_all_content():
 if __name__ == '__main__':
     app.config['UPLOAD_FOLDER'] = 'uploads'
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-    app.run(debug=True)
+    app.run(debug=False)
