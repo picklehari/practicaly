@@ -317,7 +317,7 @@ const loading = document.getElementById('loading');
         formData.append('content', content);
     }
 
-            fetch('https://bight-kxlt1kkdk-pickleharis-projects.vercel.app/api/data/generate_content', {
+            fetch('/generate_content', {
                 method: 'POST',
                 body: formData
             })
