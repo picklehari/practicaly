@@ -6,10 +6,10 @@ from pytube import YouTube
 from pypdf import PdfReader
 import uuid
 import os
-import openai
+import av
 import ollama
 from groq import Groq
-
+from tqdm import tqdm
 import warnings
 from dotenv import dotenv_values
 
@@ -17,13 +17,9 @@ api_keys = dotenv_values(".env")
 groq_api_key = api_keys["GROQ_API_KEY"]
 
 audio_client = Groq(api_key=groq_api_key)
-_INPUTS = Literal["text","url","youtube","pdf"]
+_INPUTS = Literal["text","url","video","pdf","audio"]
 
-import ollama
-import os
-from tqdm import tqdm
 
-from  pypdf import PdfReader
 
 image_prompt = '''
     Provide a descriptive summary of the diagrams provided. The diagram are extracted from the document {name}. Image:
@@ -154,7 +150,50 @@ def youtube_to_transcript(url:str,del_audio:bool = True,base_path:str="Data/") -
 
   return transcript.text
 
+def audio_to_transcript(audio_path:str):
+    '''
+    Function that takes in an file_path for audio file and converts it into a transcript. It takes in the path as input and returns the transcript using whisper API.
+    - audio_path: Path to the audio file
+    
+    '''
+    audio_file = open(audio_path,'rb')
+    transcript = audio_client.audio.transcriptions.create(model="whisper-large-v3",file=audio_file)
+    audio_file.close()
+    return transcript.text
 
+
+def transcript_from_video(video_path, output_audio_path="Temp/temp_audio.mp3"):
+    '''
+    Function that takes in a video path and extracts transcript from it. Takes the video file path and temporary path as input
+    
+    '''
+    try:
+        input_container = av.open(video_path)
+        audio_stream = next((s for s in input_container.streams if s.type == 'audio'), None)
+
+        if audio_stream is None:
+            print("No audio stream found in the video file.")
+            return
+        output_container = av.open(output_audio_path, mode='w')
+        output_stream = output_container.add_stream('mp3')
+        for packet in input_container.demux(audio_stream):
+            for frame in packet.decode():
+                packet = output_stream.encode(frame)
+                if packet:
+                    output_container.mux(packet)
+        packet = output_stream.encode(None)
+        if packet:
+            output_container.mux(packet)
+
+        input_container.close()
+        output_container.close()
+        audio_file = open(output_audio_path,'rb')
+        transcript = audio_client.audio.transcriptions.create(model="whisper-large-v3",file=audio_file).text
+        os.remove(output_audio_path)
+
+        return transcript
+    except :
+        print(f"An error occurred")
 
 def fetch_input(content:str,type: _INPUTS= "text",input_images_pdf:bool=False) -> str:
     '''
@@ -181,13 +220,15 @@ def fetch_input(content:str,type: _INPUTS= "text",input_images_pdf:bool=False) -
                 return content.split("\n\n")
             if type == "url":
                 return extract_text_from_website(content).split("\n\n")
-            if type == "youtube":
-                return youtube_to_transcript(content).split("\n\n")
+            if type == "video":
+                return transcript_from_video(content).split("\n\n")
+            if type == "audio":
+                return audio_to_transcript(content).split("\n\n")
             if type == "pdf":
                 return fetch_pdf(content,support_image=input_images_pdf).split("\n\n")
         except:
             warnings.warn("Something went wrong, ignoring current file")
 
+  
 
-    
 

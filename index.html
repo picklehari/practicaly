@@ -220,6 +220,9 @@
                             <option value="text">Text</option>
                             <option value="url">URL</option>
                             <option value="pdf">PDF</option>
+                            <option value="audio">Audio</option>
+                            <option value="video">Video</option>
+
                         </select>
                     </div>
                 </div>
@@ -228,20 +231,21 @@
                     <label for="content">Content</label>
                     <textarea id="content" rows="5" placeholder="Enter your content here..."></textarea>
                 </div>
-
+                
                 <div id="fileInput" class="hidden">
                     <label for="fileUpload">Upload File</label>
                     <div class="file-input-wrapper">
                         <button class="btn" type="button">Choose File</button>
-                        <input type="file" id="fileUpload" accept=".pdf,video/*">
+                        <input type="file" id="fileUpload" accept=".pdf,video/*,audio/*">
                     </div>
                     <div id="fileNameDisplay"></div>
                 </div>
-
+                
                 <div id="pdfOptions" class="hidden">
                     <input type="checkbox" id="useImages">
                     <label for="useImages">Use images in PDF (may increase processing time)</label>
                 </div>
+                
 
                 <button type="submit">
                     <i class="fas fa-magic"></i> Analyze and Generate
@@ -261,22 +265,22 @@
     </div>
 
     <script>
-        const form = document.getElementById('analysisForm');
-        const inputType = document.getElementById('inputType');
-        const contentInput = document.getElementById('contentInput');
-        const fileInput = document.getElementById('fileInput');
-        const pdfOptions = document.getElementById('pdfOptions');
-        const result = document.getElementById('result');
-        const fileUpload = document.getElementById('fileUpload');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-        const useImages = document.getElementById('useImages');
-        const loading = document.getElementById('loading');
+const form = document.getElementById('analysisForm');
+const inputType = document.getElementById('inputType');
+const contentInput = document.getElementById('contentInput');
+const fileInput = document.getElementById('fileInput');
+const pdfOptions = document.getElementById('pdfOptions');
+const result = document.getElementById('result');
+const fileUpload = document.getElementById('fileUpload');
+const fileNameDisplay = document.getElementById('fileNameDisplay');
+const useImages = document.getElementById('useImages');
+const loading = document.getElementById('loading');
 
         inputType.addEventListener('change', function() {
-            const isFileUpload = this.value === 'pdf' || this.value === 'youtube';
+            const isFileUpload = this.value === 'pdf' || this.value === 'video' || this.value === 'audio';
             contentInput.classList.toggle('hidden', isFileUpload);
             fileInput.classList.toggle('hidden', !isFileUpload);
-            pdfOptions.classList.toggle('hidden', this.value !== 'pdf');
+            pdfOptions.classList.toggle('hidden', this.value !== 'pdf' && this.value !== 'video' && this.value !=='audio');
         });
 
         fileUpload.addEventListener('change', function() {
@@ -288,30 +292,30 @@
         });
 
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            result.classList.add('hidden');
-            loading.classList.remove('hidden');
-            form.disabled = true;
+    e.preventDefault();
+    result.classList.add('hidden');
+    loading.classList.remove('hidden');
+    form.disabled = true;
 
-            const contentType = inputType.value;
-            const inputImagesPdf = useImages.checked;
-            let content;
+    const contentType = inputType.value;
+    const inputImagesPdf = useImages.checked;
+    let content;
 
-            if (contentType === 'pdf') {
-                content = fileUpload.files[0];
-            } else {
-                content = document.getElementById('content').value;
-            }
+    if (contentType === 'pdf' || contentType === 'audio' || contentType === 'video') {
+        content = fileUpload.files[0];
+    } else {
+        content = document.getElementById('content').value;
+    }
 
-            const formData = new FormData();
-            formData.append('content_type', contentType);
-            formData.append('input_images_pdf', inputImagesPdf);
+    const formData = new FormData();
+    formData.append('content_type', contentType);
+    formData.append('input_images_pdf', inputImagesPdf);
 
-            if (contentType === 'pdf') {
-                formData.append('file', content);
-            } else {
-                formData.append('content', content);
-            }
+    if (contentType === 'pdf' || contentType === 'audio' || contentType === 'video') {
+        formData.append('file', content);
+    } else {
+        formData.append('content', content);
+    }
 
             fetch('http://localhost:5000/generate_content', {
                 method: 'POST',

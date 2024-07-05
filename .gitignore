@@ -5,3 +5,4 @@ Pipfile.lock
 Temp/
 uploads/
 */__pychache__
+Data/
