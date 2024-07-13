@@ -4,7 +4,7 @@ Bights is a powerful tool that transforms your content into structured notes and
 
 ## Features
 
-- Supports text, URL, and PDF inputs
+- Supports text, URL, PDF, Audio and Video inputs
 - Generates lecture notes and question papers
 - Uses advanced language models for content analysis
 - Clusters content based on embeddings for better organization
@@ -12,9 +12,9 @@ Bights is a powerful tool that transforms your content into structured notes and
 
 ## Usage
 
-1. Choose the input type (text, URL, or PDF) from the dropdown menu.
+1. Choose the input type (text, URL, Video, Audio or PDF) from the dropdown menu.
 2. Enter the content or upload the file as required.
-3. If using a PDF, you can choose to use images in the analysis (may increase processing time).
+3. If using a PDF, you can choose to use images in the analysis .
 4. Click "Analyze and Generate" to start the process.
 5. Wait for the processing to complete. The tool will display a loading spinner during this time.
 6. Once the process is complete, the tool will display a success message and provide a link to download the generated PDF.
@@ -37,6 +37,7 @@ pipenv install
 
 ```
 GROQ_API_KEY=your_groq_api_key
+MISTRAL_API_KEY= your_mistral_api_key
 ```
 
 4. Run the Flask application:
